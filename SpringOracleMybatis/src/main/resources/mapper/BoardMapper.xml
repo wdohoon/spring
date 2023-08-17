@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.home.dao.BoardDAO">
+	<insert id="boardWriteOk">
+		insert into board(no, subject, content, userid, hit, writedate, ip)
+		values(boards_num_seq.nextval, #{subject}, #{content}, #{userid}, 0, sysdate, #{ip})
+	</insert>
+	<select id="boardList" resultType="com.smart.home.dto.BoardDTO">
+	select * from	
+		(select * from
+			(select no, subject, userid, hit, to_char(writedate,'MM-DD HH:MI') writedate
+			from board
+			<!-- 검색어가 있을 때 -->
+			<if test="searchWord!=null">
+				where ${searchKey} like '%${searchWord}%'
+			</if>
+			
+			order by no desc) 
+		where <![CDATA[rownum<=${nowPage*onePageRecord}]]> order by no asc)
+	where <![CDATA[rownum<=${lastPageRecord}]]> order by no desc
+	</select>
+	<select id="totalRecord" resultType="int">
+		select count(no) cnt from board
+		<if test="searchWord!=null">
+			where ${searchKey} like '%${searchWord}%' <!-- %한% '%'한'%' --> 
+		</if>
+	</select>
+	<select id="getBoard" resultType="com.smart.home.dto.BoardDTO">
+		select no, subject, content, hit, writedate, userid
+		from board
+		where no=${param1}
+	</select>
+	<update id="hitCount">
+		update board set hit=hit+1 where no=${param1}
+	</update>
+	<update id="boardEdit">
+		update board set subject=#{subject}, content=#{content}
+		where no=${no} and userid=#{userid}
+	</update>
+	<delete id="boardDel">
+		delete from board
+		where no=${param1} and userid=#{param2}
+	</delete>
+</mapper>

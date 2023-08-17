@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.home.dto.BookVo">
+	<select id="bookList" resultType="">
+		select num, title, author, company, isbn, count
+		from tbl_book
+	</select>
+	<insert id="bookInsert" parameterType="java.util.List">
+		insert into tbl_book(num, title, author, company, isbn, count)
+		values(boards_num_seq.nextval, #{subject}, #{content}, #{userid}, 0, sysdate)
+	</insert>
+</mapper>

@@ -1,0 +1,47 @@
+@charset "UTF-8";
+body, ul, li {
+	margin:0; 
+	padding:0px; 
+	list-style-type:none;
+}
+
+.logo{
+	height: 100px; 
+	line-height: 100px;
+	font-size: 3em; 
+	text-align: center;
+}
+
+/*메뉴*/
+nav a:link, nav a:visited, nav a:hover{
+	text-decoration:none; 
+	color:#fff;
+}
+
+nav{
+	height: 40px; 
+	background-color: #004D40;
+}
+
+nav>ul{
+	width: 1000px; 
+	height: 40px;
+	margin:0 auto;
+}
+
+nav li{
+	float: left; 
+	line-height:40px; 
+	padding: 0 50px;
+}
+
+footer{
+	background: #ddd;
+	text-align: center;
+	line-height: 80px;
+}
+
+main{
+	width: 1000px;
+	margin: 0 auto;
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.home.dao.DataDAO">
+	<!-- 글 등록 -->
+	<insert id="dataInsert" parameterType="com.smart.home.dto.DataDTO">
+		insert into data(no, subject, content, userid, hit, writedate)
+		values(boards_num_seq.nextval, #{subject}, #{content}, #{userid}, 0, sysdate)
+		<!-- 현재 insert에서 생성된 시퀀스번호를 dto의 no에 setter하기  -->
+		<selectKey resultType="int" keyProperty="no" order="AFTER">
+			select boards_num_seq.currval from dual
+		</selectKey>
+	</insert>
+	<!-- 업로드 파일목록을 insert -->
+	<insert id="dataFileInsert" parameterType="java.util.List">
+		
+		<foreach item="item" collection="list" open="insert all" separator=" " close="select * from dual">
+			into data_file(f_no, no, filename) values(data_file_seq.nextval, #{item.no}, #{item.filename})
+		</foreach>
+		<!-- 
+		insert all
+		
+		into data_file(f_no, no, filename) values(data_file_seq.nextval, #{no}, #{filename})
+		
+		into data_file(f_no, no, filename) values(data_file_seq.nextval, #{no}, #{filename})
+		
+		into data_file(f_no, no, filename) values(data_file_seq.nextval, #{no}, #{filename}) 
+		
+		select * from dual;
+		-->
+	</insert>
+	<!-- 원글 삭제 -->
+	<delete id="dataDelete">
+		delete from data where no=${param1} and userid=#{param2}
+	</delete>
+	<!-- 첨부파일목록 지우기 -->
+	<delete id="dataFileDelete">
+		delete from data_file where no=${param1}
+	</delete>
+	<select id="getDataList" resultType="com.smart.home.dto.DataDTO">
+		select no, subject, userid, hit, to_char(writedate, 'MM-DD HH:MI') writedate from data order by no desc
+	</select>
+	<!-- 1개레코드 -->
+	<select id="dataSelect" resultType="com.smart.home.dto.DataDTO">
+		select no, userid, subject, content, hit, writedate
+		from data where no=${param1}
+	</select>
+	<!-- 조회수 증가 -->
+	<update id="hitCount">
+		update data set hit=hit+1 where no=${param1}
+	</update>
+	<select id="dataFileSelect" resultType="com.smart.home.dto.DataFileDTO">
+		select no, filename from data_file where no=${param1}
+	</select>
+	<update id="dataUpdate">
+		update data set subject=#{subject}, content=#{content}
+		where no=${no}
+	</update>
+</mapper>
